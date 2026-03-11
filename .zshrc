@@ -167,7 +167,7 @@ alias venv='source .venv/bin/activate'
 
 # dotfiles
 # www.atlassian.com/git/tutorials/dotfiles
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # ALIASES END
 #  ________ ___  ___  ________   ________ _________  ___  ________  ________   ________      
