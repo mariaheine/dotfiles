@@ -151,8 +151,11 @@ eval "$(starship init zsh)"
 #    \ \_\ \_\ \____/ \ \_\ \__/.\_\/\____/\ \____\/\____/
 #     \/_/\/_/\/___/   \/_/\/__/\/_/\/___/  \/____/\/___/
 #
-alias zshsource='source ~/.zshrc'
-alias zshedit='nvim ~/.zshrc' 
+alias zshs='source ~/.zshrc'
+alias zshed='nvim ~/.zshrc' 
+
+# lsd
+alias la='lsd -la'
 
 # Unity
 alias killunity='pkill -9 -f "/Editor/Unity"; rm -f ~/Projects/sanctuary/sanctuary/sanctuary/Temp/UnityLockfile'
@@ -160,7 +163,15 @@ alias sanctuary='/home/merryangel/Projects/sanctuary/builds/Development/1.6.0.sa
 
 # Apps
 alias shotcut='~/Applications/Shotcut-25.11.AppImage'
-alias nvim='~/Applications/nvim_0.11.6.AppImage'
+
+# Nvim
+# remember to use the archive version not the appimage
+alias nvim='~/Applications/nvim_0.11.6/nvim-linux-x86_64/bin/nvim'
+
+# tmux
+alias tmed='nvim ~/.tmux.conf'
+alias tms='tmux source-file ~/.tmux.conf'
+alias tmks='tmux kill-server'
 
 # Python
 alias venv='source .venv/bin/activate'
