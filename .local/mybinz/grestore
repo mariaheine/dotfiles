@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+git status --porcelain \
+| grep '^.[MDRA?]' \
+| cut -c4- \
+| sed 's/^"//; s/"$//' \
+| fzf -m --ansi --preview 'git --no-pager diff --color=always -- {} | delta' \
+| xargs -r -I{} git restore "{}"
+
