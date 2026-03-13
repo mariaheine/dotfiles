@@ -1,0 +1,10 @@
+com.discordapp.Discord
+com.obsproject.Studio
+com.slack.Slack
+com.stremio.Stremio
+net.ankiweb.Anki
+org.blender.Blender
+org.gimp.GIMP
+org.libreoffice.LibreOffice
+org.shotcut.Shotcut
+org.signal.Signal
