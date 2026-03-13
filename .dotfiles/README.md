@@ -4,10 +4,14 @@
 - `.zshrc`
 - `.tmux.conf`
 - `.config/flatpak-packages.txt`
+- `.config/ksnip/ksnip.conf`
+    - app for screenshots
 
 ## Tracked dirs:
 
 > Listed as commands because I need to repeat them each time I do updates. Maybe there is a better way to do this but I am not overengineering things now.
+
+> 🐖 Remember to re-run those after creating some new files.
 
 - `dot add ~/.local/share/konsole/`
 - `dot add ~/.local/mybinz/`
