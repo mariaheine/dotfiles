@@ -1,0 +1,44 @@
+# https://dandavison.github.io/delta/configuration.html
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	dark = true
+
+[merge]
+	conflictStyle = zdiff3
+
+[credential]
+	helper = store
+	
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[user]
+	name = kimja
+	email = inthenameoferis@gmail.com
+
+[core]
+	autocrlf = input
+
+[alias]
+	unstage = restore --staged --
+	status-staged = !git diff --cached --name-status
+	crefactor = "!f() { git commit -m \"✨ $*\"; }; f"
+	cclean = "!f() { git commit -m \"🧹 $*\"; }; f"
+	cbug = "!f() { git commit -m \"🐛 $*\"; }; f"
+	crelease = "!f() { git commit -m \"🍰 $*\"; }; f"
+	cpackage = "!f() { git commit -m \"📦 $*\"; }; f"
+	cwork = "!f() { git commit -m \"🛠️ $*\"; }; f"
+	cbreakthrough = "!f() { git commit -m \"🌲 $*\"; }; f"
+	plog = log --oneline --graph --decorate
+	ss = !git diff --cached --name-status
+	s = status
+	camend = commit --amend --no-edit
