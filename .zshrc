@@ -110,6 +110,8 @@ alias sanctuary='/home/merryangel/Projects/sanctuary/builds/Development/1.6.0.sa
 
 # Apps
 alias shotcut='~/Applications/Shotcut-25.11.AppImage'
+alias blender='~/Applications/blender-5.1.0-linux-x64/blender'
+alias godot='~/Applications/Godot_v4.6.1-stable_linux.x86_64'
 
 # Nvim
 # remember to use the archive version not the appimage
