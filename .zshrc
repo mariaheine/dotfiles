@@ -21,8 +21,10 @@
 #   \ \__\    \ \__\ \__\   \ \__\ \ \__\ \__\
 #    \|__|     \|__|\|__|    \|__|  \|__|\|__|
 #
-export PATH="$PATH:$HOME/.dotnet/tools"
-export PATH="$PATH:$HOME/.local/mybinz"
+PATH="$PATH:$HOME/.dotnet/tools"
+PATH="$PATH:$HOME/.local/mybinz"
+PATH="$PATH:$HOME/.local/bin"
+export PATH
 
 # PATH END
 

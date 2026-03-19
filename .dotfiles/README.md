@@ -16,6 +16,9 @@
 - `dot add ~/.local/share/konsole/`
 - `dot add ~/.local/mybinz/`
 - `dot add ~/.config/nvim/`
+    - requires for roslyn net10+
+        - sudo apt install -y dotnet-sdk-10.0
+        - or see latest at https://learn.microsoft.com/en-us/dotnet/core/install/linux
 - `dot add ~/.config/autokey/`
 
 ## Flatpak
