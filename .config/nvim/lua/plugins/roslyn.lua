@@ -8,6 +8,10 @@ return {
 	-- 		require("roslyn_filewatch").setup()
 	-- 	end,
 	-- },
+    -- 🐖 VERY IMPORTANT
+    -- you might have weird problems when your max_user_watchers are set too low
+    -- and by default on most distros they are pretty low
+    -- see notes in linux fundamentals about inotfy
 	{
 		-- https://github.com/seblyng/roslyn.nvim
 		-- Das Plugin kann hervorragend mit Projekten umgehen, die mehrere .sln-Dateien haben. Mit :Roslyn target kannst du die aktive Solution wechseln.
@@ -18,8 +22,8 @@ return {
 		---@type RoslynNvimConfig
 		opts = {
 			-- see possible options here: https://github.com/seblyng/roslyn.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
-			broad_search = true, -- Nützlich für Projekte ohne .sln-Datei im Wurzelverzeichnis.
-			filewatching = "auto",
+			broad_search = false, -- Rzeka.slnx is at the root, upward search is enough
+			filewatching = "roslyn", -- Let Roslyn handle file watching, more reliable cross-project
 		},
 
 		config = function(_, opts)

@@ -143,6 +143,24 @@ alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # DERP, NO FUNCTIONS CURRENTLY
 
+inotify-check() {
+    echo "=== Watches in use ==="
+    for pid in /proc/[0-9]*/; do
+        count=$(cat ${pid}fdinfo/* 2>/dev/null | grep -c inotify)
+        [ "$count" -gt 0 ] && echo "$count\t$(cat ${pid}comm 2>/dev/null) (pid ${pid//[^0-9]/})"
+    done | sort -rn
+    echo ""
+    echo "=== Instances in use ==="
+    for pid in /proc/[0-9]*/; do
+        count=$(grep -rl "inotify" ${pid}fdinfo/ 2>/dev/null | wc -l)
+        [ "$count" -gt 0 ] && echo "$count\t$(cat ${pid}comm 2>/dev/null) (pid ${pid//[^0-9]/})"
+    done | sort -rn
+    echo "=== Limits ==="
+    echo "max_user_watches:   $(cat /proc/sys/fs/inotify/max_user_watches)"
+    echo "max_user_instances: $(cat /proc/sys/fs/inotify/max_user_instances)"
+    echo ""
+}
+
 # FUNCTIONS END
 
 #  ________  ___       __   _______   _______  _________  ________
