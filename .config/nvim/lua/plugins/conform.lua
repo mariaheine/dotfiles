@@ -24,6 +24,19 @@ return {
 			lua = { "stylua" },
 			-- c#
 			cs = { "csharpier" },
+			-- typescript / javascript
+			typescript = { "prettier" },
+			typescriptreact = { "prettier" },
+			javascript = { "prettier" },
+			javascriptreact = { "prettier" },
+			-- html / css
+			html = { "prettier" },
+			css = { "prettier" },
+			scss = { "prettier" },
+			less = { "prettier" },
+			-- json (package.json, tsconfig.json, webpack configs, etc.)
+			json = { "prettier" },
+			jsonc = { "prettier" },
 		},
 
 		-- As it says, format on save

@@ -54,8 +54,44 @@ return {
 				on_attach = on_attach,
 			}
 
+			-- TypeScript / JavaScript
+			vim.lsp.config["ts_ls"] = {
+				cmd = { "typescript-language-server", "--stdio" },
+				root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+				filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+			}
+
+			-- HTML
+			vim.lsp.config["html"] = {
+				cmd = { "vscode-html-language-server", "--stdio" },
+				root_markers = { "package.json", ".git" },
+				filetypes = { "html" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+			}
+
+			-- CSS / SCSS / Less
+			vim.lsp.config["cssls"] = {
+				cmd = { "vscode-css-language-server", "--stdio" },
+				root_markers = { "package.json", ".git" },
+				filetypes = { "css", "scss", "less" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+			}
+
+			-- JSON (tsconfig.json, package.json, webpack configs, etc.)
+			vim.lsp.config["jsonls"] = {
+				cmd = { "vscode-json-language-server", "--stdio" },
+				root_markers = { "package.json", ".git" },
+				filetypes = { "json", "jsonc" },
+				capabilities = capabilities,
+				on_attach = on_attach,
+			}
+
 			-- Enable the server
-			vim.lsp.enable({ "basedpyright", "bashls" })
+			vim.lsp.enable({ "basedpyright", "bashls", "ts_ls", "html", "cssls", "jsonls" })
 		end,
 	},
 }

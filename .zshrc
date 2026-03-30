@@ -109,6 +109,7 @@ alias la='lsd -la'
 # Unity
 alias killunity='pkill -9 -f "/Editor/Unity"; rm -f ~/Projects/sanctuary/sanctuary/sanctuary/Temp/UnityLockfile'
 alias sanctuary='/home/merryangel/Projects/sanctuary/builds/Development/1.6.0.sanctuary.coreprincess/Linux/sanctuary.x86_64'
+alias unity='flatpak run com.unity.UnityHub'
 
 # Apps
 alias shotcut='~/Applications/Shotcut-25.11.AppImage'

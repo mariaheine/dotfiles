@@ -12,6 +12,17 @@ return {
 		auto_install = true,
 		sync_install = false,
 
+		ensure_installed = {
+			"typescript",
+			"tsx",
+			"javascript",
+			"jsdoc",
+			"html",
+			"css",
+			"json",
+			"jsonc",
+		},
+
 		-- Syntax highlighting
 		highlight = {
 			enable = true,

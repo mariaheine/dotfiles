@@ -26,6 +26,10 @@ return {
 				-- And write them configs in 'lsp.lua'
 				"basedpyright", -- python lsp
 				"bashls", -- bash lsp
+				"ts_ls", -- typescript / javascript lsp
+				"html", -- html lsp
+				"cssls", -- css / scss / less lsp
+				"jsonls", -- json lsp
 			},
 			automatic_installation = true,
 		},
@@ -41,6 +45,7 @@ return {
 				"stylua",
 				"csharpier",
 				"black",
+				"prettier", -- typescript / javascript / html / css / json formatter
 				-- c# roslyn
 				"roslyn",
 			},
