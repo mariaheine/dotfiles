@@ -1,1 +1,70 @@
 #!/usr/bin/env bash
+
+git_root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "gdo: not in a git repo" >&2; exit 1; }
+
+readonly add_option="Add"
+readonly unstage_option="Unstage"
+readonly restore_option='Restore [🔥 DANGER, will undo all changes.]'
+readonly exit_option="Exit"
+
+menu_elements=(
+    "$add_option"
+    "$unstage_option"
+    "$restore_option"
+    "$exit_option"
+)
+
+fzf_args=(
+    --style full
+    --border --padding 1,1
+    --border-label "'° GIT TOOLZ °'"
+    --input-label "'° FUZZZ SEARCH °'"
+    --preview-label "'° diff °'"
+    --preview-window=right:40%:wrap
+    --color 'border:#aaaaaa,label:#cccccc'
+    --color 'preview-border:#9999cc,preview-label:#ccccff'
+    --color 'list-border:#669966,list-label:#99cc99'
+    --color 'input-border:#996666,input-label:#ffcccc'
+    --color 'header-border:#6699cc,header-label:#99ccff'
+    --layout reverse
+    --info=inline
+)
+
+fzf_input=$(printf '%s\n' "${menu_elements[@]}")
+action=$(echo "$fzf_input" | fzf "${fzf_args[@]}" --list-label="'° meow! 🐖 °'")
+    
+
+[ -z "$action" ] && exit 0
+
+case "$action" in
+    "$add_option")
+        candidates=$(cd "$git_root" && { git diff --name-only; git ls-files --others --exclude-standard; })
+        preview="git -C $git_root diff --color=always -- {} 2>/dev/null || cat $git_root/{}"
+        label="Add files to staging 💽"
+        ;;
+    "$unstage_option")
+        candidates=$(git -C "$git_root" diff --cached --name-only)
+        preview="git -C $git_root diff --cached --color=always -- {}"
+        label="Unstage files 🐖"
+        ;;
+    "$restore_option")
+        candidates=$(git -C "$git_root" diff --name-only)
+        preview="git -C $git_root diff --color=always -- {}"
+        label="Undo all changes to the selected files 🧨"
+        ;;
+    "$exit_option")
+        exit 0
+        echo "Bai! 🐖"
+        ;;
+esac
+
+[ -z "$candidates" ] && { echo "gdo: nothing to $action" >&2; exit 0; }
+
+selected=$(echo "$candidates" | fzf "${fzf_args[@]}" --multi --ansi --list-label="'° $label °'" --prompt="$action: "  --preview "$preview")
+[ -z "$selected" ] && exit 0
+
+case "$action" in
+    "$add_option")     echo "$selected" | xargs git -C "$git_root" add -- ;;
+    "$restore_option") echo "$selected" | xargs git -C "$git_root" restore -- ;;
+    "$unstage_option") echo "$selected" | xargs git -C "$git_root" restore --staged -- ;;
+esac

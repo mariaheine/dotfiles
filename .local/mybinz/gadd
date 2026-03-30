@@ -1,8 +1,75 @@
 #!/usr/bin/env bash
-git status --porcelain \
-| grep '^.[MDRA?]' \
-| cut -c4- \
-| sed 's/^"//; s/"$//' \
-| fzf -m --ansi --preview 'git --no-pager diff --color=always -- {} | delta' \
-| xargs -r -I{} git add "{}"
+git status --porcelain |
+    grep '^.[MDRA?]' |
+    cut -c4- |
+    sed 's/^"//; s/"$//' |
+    fzf -m --ansi --preview 'git --no-pager diff --color=always -- {} | delta' |
+    xargs -r -I{} git add "{}"
 
+#!/usr/bin/env bash
+# git status --porcelain \
+# | grep '^.[MDRA?]' \
+# | cut -c4- \
+# | sed 's/^"//; s/"$//' \
+# | fzf -m --ansi --preview 'git --no-pager diff --color=always -- {} | delta' \
+# | xargs -r -I{} git add "{}"
+
+echo meow
+
+stat=$(git status --porcelain | grep '^.[MDRA?]')
+echo $field
+
+do_git() {
+    git status --porcelain |
+        grep '^.[MDRA?]' |
+        cut -c4- |
+        sed 's/^"//; s/"$//' |
+        fzf -m --ansi --preview 'git --no-pager diff --color=always -- {} | delta' |
+        xargs -r -I{} git "$1" "{}"
+}
+
+fzf_args=(
+    --style full
+    --border --padding 1,1
+    --border-label "'° BBC Sound Effect Browser °'"
+    --input-label "'° FUZZZ SEARCH °'"
+    --list-label "'° LIST °'"
+    --header="meow! 🐖"
+    --header-label "'° HEADER °'"
+    --preview-label "'° previev label °'"
+    --preview-window=right:40%:wrap
+    --color 'border:#aaaaaa,label:#cccccc'
+    --color 'preview-border:#9999cc,preview-label:#ccccff'
+    --color 'list-border:#669966,list-label:#99cc99'
+    --color 'input-border:#996666,input-label:#ffcccc'
+    --color 'header-border:#6699cc,header-label:#99ccff'
+    --layout reverse
+    --info=inline
+)
+
+readonly menu_option_1="Add"
+readonly menu_option_2="Unstage"
+readonly menu_option_3='Restore [🔥 DANGER, will undo all changes.]'
+readonly menu_option_4="Exit"
+
+menu_elements=(
+    "$menu_option_1"
+    "$menu_option_2"
+    "$menu_option_3"
+    "$menu_option_4"
+)
+
+fzf_input=$(printf '%s\n' "${menu_elements[@]}")
+selection=$(echo "$fzf_input" | fzf "${fzf_args[@]}")
+
+local selected=$(open_fzf_menu 'menu_config')
+case "${selected}" in
+"$menu_option_1")
+    do_git add
+    ;;
+"$menu_option_4")
+    echo "Goodbaiii 🐱"
+    break
+    ;;
+*) ;;
+esac
