@@ -15,31 +15,28 @@ return {
 			local actions = require("telescope.actions")
 
 			telescope.setup({
+				defaults = {
+					-- ignore noise
+					file_ignore_patterns = { "node_modules", ".git/" },
+					mappings = {
+						i = {
+							["<esc>"] = actions.close,
+						},
+					},
+				},
+				pickers = {
+					find_files = {
+						-- This is the key part: find hidden files and respect .gitignore
+						hidden = true,
+						find_command = { "rg", "--files", "--hidden", "--glob", "!.git" },
+					},
+				},
 				extensions = {
 					fzf = {
 						fuzzy = true,
 						override_generic_sorter = true,
 						override_file_sorter = true,
 						case_mode = "smart_case",
-					},
-					defaults = {
-						-- ignore noise
-						file_ignore_patterns = { "node_modules", ".git/" },
-						mappings = {
-							i = {
-								-- this was supposed to allow immediate close on esc key while in telescope insert mode
-								-- ass following docs
-								-- but it doesnt work for some reason
-								["<esc>"] = actions.close,
-							},
-						},
-					},
-					pickers = {
-						find_files = {
-							-- This is the key part: find hidden files and respect .gitignore
-							hidden = true,
-							find_command = { "rg", "--files", "--hidden", "--glob", "!.git" },
-						},
 					},
 				},
 			})
