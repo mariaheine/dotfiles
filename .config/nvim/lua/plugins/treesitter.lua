@@ -13,6 +13,8 @@ return {
 		sync_install = false,
 
 		ensure_installed = {
+			"markdown",
+			"markdown_inline",
 			"typescript",
 			"tsx",
 			"javascript",
