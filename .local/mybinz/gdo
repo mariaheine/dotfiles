@@ -6,6 +6,7 @@ readonly add_option="Add"
 readonly unstage_option="Unstage"
 readonly stash_option="Stash"
 readonly restore_option='Restore [🔥 DANGER, will undo all changes to the selected files.]'
+readonly log_option="Log"
 readonly exit_option="Exit"
 
 menu_elements=(
@@ -13,6 +14,7 @@ menu_elements=(
     "$unstage_option"
     "$stash_option"
     "$restore_option"
+    "$log_option"
     "$exit_option"
 )
 
@@ -78,6 +80,19 @@ case "$action" in
         candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]')
         preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
         label="Undo all changes to the selected files 🧨"
+        ;;
+    "$log_option")
+        log_preview="git -C \"$git_root\" show --stat --color=always \$(echo {} | awk '{print \$1}')"
+        commit_line=$(git -C "$git_root" log --format="%h %s" | fzf "${fzf_args[@]}" --list-label="'° git log °'" --preview "$log_preview")
+        [ -z "$commit_line" ] && exit 0
+        commit_hash=$(echo "$commit_line" | awk '{print $1}')
+
+        file_list=$(git -C "$git_root" diff-tree --no-commit-id -r --name-status "$commit_hash")
+        [ -z "$file_list" ] && { echo "gdo: no file changes in $commit_hash" >&2; exit 0; }
+
+        file_preview="fstatus=\$(echo {} | cut -f1); f=\$(echo {} | cut -f2); if [ \"\$fstatus\" = 'A' ]; then git -C \"$git_root\" show \"$commit_hash\":\"\$f\" | bat --color=always --file-name=\"\$f\"; else git -C \"$git_root\" diff --color=always \"$commit_hash\"^..\"$commit_hash\" -- \"\$f\"; fi"
+        echo "$file_list" | fzf "${fzf_args[@]}" --ansi --list-label="'° $commit_hash °'" --preview "$file_preview"
+        exit 0
         ;;
     "$exit_option")
         exit 0
