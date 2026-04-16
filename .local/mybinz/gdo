@@ -35,86 +35,108 @@ fzf_args=(
 )
 
 fzf_input=$(printf '%s\n' "${menu_elements[@]}")
-action=$(echo "$fzf_input" | fzf "${fzf_args[@]}" --list-label="'° meow! 🐖 °'")
-    
 
-[ -z "$action" ] && exit 0
+while true; do
+    action=$(echo "$fzf_input" | fzf "${fzf_args[@]}" --list-label="'° meow! 🐖 °'")
+    fzf_exit=$?
+    [[ $fzf_exit -eq 130 ]] && exit 0   # Ctrl+C → kill
+    [ -z "$action" ] && exit 0           # Escape at top level → exit
 
-case "$action" in
-    "$add_option")
-        candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]|^\?\?')
-        preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
-        label="Add files to staging 💽"
-        ;;
-    "$unstage_option")
-        candidates=$(git -C "$git_root" status --short | grep -E '^[MADRCU]')
-        preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --cached --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
-        label="Unstage files 🐖"
-        ;;
-    "$stash_option")
-        stash_push="Push to stash"
-        stash_restore="Restore from stash"
-        stash_action=$(printf '%s\n%s' "$stash_push" "$stash_restore" | fzf "${fzf_args[@]}" --list-label="'° Stash 📦 °'")
-        [ -z "$stash_action" ] && exit 0
-
-        if [[ "$stash_action" == "$stash_push" ]]; then
+    case "$action" in
+        "$add_option")
             candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]|^\?\?')
             preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
-            label="Stash selected files 📦"
-            action="stash_push"
-        else
-            stash_list=$(git -C "$git_root" stash list)
-            [ -z "$stash_list" ] && { echo "gdo: no stashes found" >&2; exit 0; }
-            stash_preview="ref=\$(echo {} | cut -d: -f1); git -C \"$git_root\" stash show -p --color=always \"\$ref\""
-            stash_entry=$(echo "$stash_list" | fzf "${fzf_args[@]}" --list-label="'° Pick a stash 📦 °'" --preview "$stash_preview")
-            [ -z "$stash_entry" ] && exit 0
-            stash_ref=$(echo "$stash_entry" | cut -d: -f1)
+            label="Add files to staging 💽"
+            ;;
+        "$unstage_option")
+            candidates=$(git -C "$git_root" status --short | grep -E '^[MADRCU]')
+            preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --cached --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
+            label="Unstage files 🐖"
+            ;;
+        "$stash_option")
+            stash_push="Push to stash"
+            stash_restore="Restore from stash"
+            stash_action=$(printf '%s\n%s' "$stash_push" "$stash_restore" | fzf "${fzf_args[@]}" --list-label="'° Stash 📦 °'")
+            fzf_exit=$?
+            [[ $fzf_exit -eq 130 ]] && exit 0
+            [ -z "$stash_action" ] && continue  # Escape → back to main menu
 
-            candidates=$(git -C "$git_root" stash show --name-only "$stash_ref" | sed 's/^/   /')
-            preview="f=\$(echo {} | sed 's/^ *//'); git -C \"$git_root\" diff --color=always \"$stash_ref\"^..\"$stash_ref\" -- \"\$f\""
-            label="Restore files from $stash_ref 📦"
-            action="stash_restore"
-        fi
-        ;;
-    "$restore_option")
-        candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]')
-        preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
-        label="Undo all changes to the selected files 🧨"
-        ;;
-    "$log_option")
-        log_preview="git -C \"$git_root\" show --stat --color=always \$(echo {} | awk '{print \$1}')"
-        commit_line=$(git -C "$git_root" log --format="%h %s" | fzf "${fzf_args[@]}" --list-label="'° git log °'" --preview "$log_preview")
-        [ -z "$commit_line" ] && exit 0
-        commit_hash=$(echo "$commit_line" | awk '{print $1}')
+            if [[ "$stash_action" == "$stash_push" ]]; then
+                candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]|^\?\?')
+                preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
+                label="Stash selected files 📦"
+                action="stash_push"
+            else
+                stash_list=$(git -C "$git_root" stash list)
+                [ -z "$stash_list" ] && { echo "gdo: no stashes found" >&2; continue; }
+                stash_preview="ref=\$(echo {} | cut -d: -f1); git -C \"$git_root\" stash show -p --color=always \"\$ref\""
+                stash_entry=$(echo "$stash_list" | fzf "${fzf_args[@]}" --list-label="'° Pick a stash 📦 °'" --preview "$stash_preview")
+                fzf_exit=$?
+                [[ $fzf_exit -eq 130 ]] && exit 0
+                [ -z "$stash_entry" ] && continue  # Escape → back to main menu
+                stash_ref=$(echo "$stash_entry" | cut -d: -f1)
 
-        file_list=$(git -C "$git_root" diff-tree --no-commit-id -r --name-status "$commit_hash")
-        [ -z "$file_list" ] && { echo "gdo: no file changes in $commit_hash" >&2; exit 0; }
+                candidates=$(git -C "$git_root" stash show --name-only "$stash_ref" | sed 's/^/   /')
+                preview="f=\$(echo {} | sed 's/^ *//'); git -C \"$git_root\" diff --color=always \"$stash_ref\"^..\"$stash_ref\" -- \"\$f\""
+                label="Restore files from $stash_ref 📦"
+                action="stash_restore"
+            fi
+            ;;
+        "$restore_option")
+            candidates=$(git -C "$git_root" status --short | grep -E '^ [MADRCU]')
+            preview="f=\$(echo {} | cut -c4-); diff_out=\$(git -C \"$git_root\" diff --color=always -- \"\$f\" 2>/dev/null); [ -n \"\$diff_out\" ] && echo \"\$diff_out\" || bat --color=always \"$git_root/\$f\" 2>/dev/null || cat \"$git_root/\$f\""
+            label="Undo all changes to the selected files 🧨"
+            ;;
+        "$log_option")
+            log_preview="git -C \"$git_root\" show --stat --color=always \$(echo {} | awk '{print \$1}')"
+            while true; do
+                commit_line=$(git -C "$git_root" log --format="%h %s" | fzf "${fzf_args[@]}" --list-label="'° git log °'" --preview "$log_preview")
+                fzf_exit=$?
+                [[ $fzf_exit -eq 130 ]] && exit 0
+                [ -z "$commit_line" ] && break  # Escape → back to main menu
 
-        file_preview="fstatus=\$(echo {} | cut -f1); f=\$(echo {} | cut -f2); if [ \"\$fstatus\" = 'A' ]; then git -C \"$git_root\" show \"$commit_hash\":\"\$f\" | bat --color=always --file-name=\"\$f\"; else git -C \"$git_root\" diff --color=always \"$commit_hash\"^..\"$commit_hash\" -- \"\$f\"; fi"
-        echo "$file_list" | fzf "${fzf_args[@]}" --ansi --list-label="'° $commit_hash °'" --preview "$file_preview"
-        exit 0
-        ;;
-    "$exit_option")
-        exit 0
-        echo "Bai! 🐖"
-        ;;
-esac
+                commit_hash=$(echo "$commit_line" | awk '{print $1}')
+                file_list=$(git -C "$git_root" diff-tree --no-commit-id -r --name-status "$commit_hash")
+                if [ -z "$file_list" ]; then
+                    echo "gdo: no file changes in $commit_hash" >&2
+                    continue
+                fi
 
-[ -z "$candidates" ] && { echo "gdo: nothing to $action" >&2; exit 0; }
+                file_preview="fstatus=\$(echo {} | cut -f1); f=\$(echo {} | cut -f2); if [ \"\$fstatus\" = 'A' ]; then git -C \"$git_root\" show \"$commit_hash\":\"\$f\" | bat --color=always --file-name=\"\$f\"; else git -C \"$git_root\" diff --color=always \"$commit_hash\"^..\"$commit_hash\" -- \"\$f\"; fi"
+                echo "$file_list" | fzf "${fzf_args[@]}" --ansi --list-label="'° $commit_hash °'" --preview "$file_preview"
+                fzf_exit=$?
+                [[ $fzf_exit -eq 130 ]] && exit 0
+                # Escape or selection → continue inner loop (back to commit list)
+            done
+            continue  # Inner loop broke (Escape on commit list) → back to main menu
+            ;;
+        "$exit_option")
+            exit 0
+            ;;
+    esac
 
-selected=$(echo "$candidates" | fzf "${fzf_args[@]}" --multi --ansi --list-label="'° $label °'" --prompt="$action: "  --preview "$preview")
-[ -z "$selected" ] && exit 0
+    [ -z "$candidates" ] && { echo "gdo: nothing to $action" >&2; continue; }
 
-if [[ "$action" == "$restore_option" ]]; then
-    count=$(echo "$selected" | wc -l | tr -d ' ')
-    confirm=$(printf 'No\nYes' | fzf --prompt="Restore $count file(s)? " --header="🧨 This will undo all changes!")
-    [[ "$confirm" != "Yes" ]] && exit 0
-fi
+    selected=$(echo "$candidates" | fzf "${fzf_args[@]}" --multi --ansi --list-label="'° $label °'" --prompt="$action: " --preview "$preview")
+    fzf_exit=$?
+    [[ $fzf_exit -eq 130 ]] && exit 0
+    [ -z "$selected" ] && continue  # Escape → back to main menu
 
-case "$action" in
-    "$add_option")     echo "$selected" | cut -c4- | xargs git -C "$git_root" add -- ;;
-    "stash_push")      files=$(echo "$selected" | cut -c4- | tr '\n' ' '); git -C "$git_root" stash push -- $files ;;
-    "stash_restore")   echo "$selected" | sed 's/^ *//' | xargs git -C "$git_root" checkout "$stash_ref" -- ;;
-    "$restore_option") echo "$selected" | cut -c4- | xargs git -C "$git_root" restore -- ;;
-    "$unstage_option") echo "$selected" | cut -c4- | xargs git -C "$git_root" restore --staged -- ;;
-esac
+    if [[ "$action" == "$restore_option" ]]; then
+        count=$(echo "$selected" | wc -l | tr -d ' ')
+        confirm=$(printf 'No\nYes' | fzf --prompt="Restore $count file(s)? " --header="🧨 This will undo all changes!")
+        fzf_exit=$?
+        [[ $fzf_exit -eq 130 ]] && exit 0
+        [[ "$confirm" != "Yes" ]] && continue  # No/Escape → back to main menu
+    fi
+
+    case "$action" in
+        "$add_option")     echo "$selected" | cut -c4- | xargs git -C "$git_root" add -- ;;
+        "stash_push")      files=$(echo "$selected" | cut -c4- | tr '\n' ' '); git -C "$git_root" stash push -- $files ;;
+        "stash_restore")   echo "$selected" | sed 's/^ *//' | xargs git -C "$git_root" checkout "$stash_ref" -- ;;
+        "$restore_option") echo "$selected" | cut -c4- | xargs git -C "$git_root" restore -- ;;
+        "$unstage_option") echo "$selected" | cut -c4- | xargs git -C "$git_root" restore --staged -- ;;
+    esac
+
+    break  # Action performed → exit
+done

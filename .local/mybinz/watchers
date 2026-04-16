@@ -1,0 +1,26 @@
+#!/bin/bash
+echo "=== Inotify Instances per process (limit: $(cat /proc/sys/fs/inotify/max_user_instances)) ==="
+  for pid in /proc/[0-9]*/; do
+      count=$(find ${pid}fd -lname 'anon_inode:inotify' 2>/dev/null | wc -l)
+      [ "$count" -gt 2 ] && echo "$count $(cat ${pid}comm 2>/dev/null) (${pid//[^0-9]/})"
+  done | sort -rn
+
+  echo ""
+  echo "=== Inotify Watches per process (limit: $(cat /proc/sys/fs/inotify/max_user_watches)) ==="
+  for pid in /proc/[0-9]*/; do
+      count=$(cat ${pid}fdinfo/* 2>/dev/null | grep -c '^inotify')
+      [ "$count" -gt 10 ] && echo "$count $(cat ${pid}comm 2>/dev/null) (${pid//[^0-9]/})"
+  done | sort -rn
+
+  inst_limit=$(cat /proc/sys/fs/inotify/max_user_instances)
+  inst_used=$(find /proc/*/fd -lname 'anon_inode:inotify' 2>/dev/null | wc -l)
+  inst_pct=$(( inst_used * 100 / inst_limit ))
+
+  watch_limit=$(cat /proc/sys/fs/inotify/max_user_watches)
+  watch_used=$(cat /proc/*/fdinfo/* 2>/dev/null | grep -c '^inotify')
+  watch_pct=$(( watch_used * 100 / watch_limit ))
+
+  echo ""
+  echo "Total instances in use: $inst_used / $inst_limit ($inst_pct%)"
+  echo "Total watches in use:   $watch_used / $watch_limit ($watch_pct%)"
+
