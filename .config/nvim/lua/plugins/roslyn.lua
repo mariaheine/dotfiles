@@ -1,6 +1,6 @@
 return {
-    -- 🐖 This finally managed to get my Rzeka.Tests.csproj be able to detect and code-complete
-    -- stuff from the Rzeka.Core.csproj
+	-- 🐖 This finally managed to get my Rzeka.Tests.csproj be able to detect and code-complete
+	-- stuff from the Rzeka.Core.csproj
 	-- {
 	-- 	"khoido2003/roslyn-filewatch.nvim",
 	-- 	build = "nvim -l build.lua --", -- Compiles or downloads the Native Rust module fallback
@@ -8,10 +8,10 @@ return {
 	-- 		require("roslyn_filewatch").setup()
 	-- 	end,
 	-- },
-    -- 🐖 VERY IMPORTANT
-    -- you might have weird problems when your max_user_watchers are set too low
-    -- and by default on most distros they are pretty low
-    -- see notes in linux fundamentals about inotfy
+	-- 🐖 VERY IMPORTANT
+	-- you might have weird problems when your max_user_watchers are set too low
+	-- and by default on most distros they are pretty low
+	-- see notes in linux fundamentals about inotfy
 	{
 		-- https://github.com/seblyng/roslyn.nvim
 		-- Das Plugin kann hervorragend mit Projekten umgehen, die mehrere .sln-Dateien haben. Mit :Roslyn target kannst du die aktive Solution wechseln.
@@ -23,7 +23,7 @@ return {
 		opts = {
 			-- see possible options here: https://github.com/seblyng/roslyn.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
 			broad_search = false, -- Rzeka.slnx is at the root, upward search is enough
-			filewatching = "roslyn", -- Let Roslyn handle file watching, more reliable cross-project
+			filewatching = "off", -- Let Roslyn handle file watching, more reliable cross-project
 		},
 
 		config = function(_, opts)
@@ -34,12 +34,13 @@ return {
 			vim.lsp.config("roslyn", {
 				on_attach = function(client, bufnr)
 					local opts = { buffer = bufnr }
-					vim.keymap.set("n", "grd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "grd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition" })
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-					vim.keymap.set("n", "grr", vim.lsp.buf.references, opts)
+					vim.keymap.set("n", "grr", vim.lsp.buf.references, { buffer = bufnr, desc = "Go to references" })
 					--                     vim.keymap.set('n', 'gr', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
 					-- vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
 					vim.keymap.set("n", "KK", vim.diagnostic.open_float, { desc = "Show diagnostics" })
+					vim.keymap.set("n", "grx", "<cmd>Telescope diagnostics<cr>", { desc = "Browse diagnostics", buffer = bufnr })
 				end,
 				capabilities = require("cmp_nvim_lsp").default_capabilities(),
 				settings = {

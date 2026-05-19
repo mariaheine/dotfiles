@@ -103,8 +103,9 @@ eval "$(starship init zsh)"
 alias zshs='source ~/.zshrc'
 alias zshed='nvim ~/.zshrc'
 
-# lsd
+# daily things
 alias la='lsd -la'
+alias fd='fdfind'
 
 # Unity
 alias killunity='pkill -9 -f "/Editor/Unity"; rm -f ~/Projects/sanctuary/sanctuary/sanctuary/Temp/UnityLockfile'

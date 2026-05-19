@@ -38,6 +38,17 @@ vim.opt.writebackup = false
 
 vim.keymap.set("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 
+-- Make n/N always go down/up regardless of search direction (/ or ?)
+vim.keymap.set("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next match (always down)" })
+vim.keymap.set("n", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev match (always up)" })
+
+-- Horizontal scroll with Alt+ScrollWheel (requires wrap=false)
+vim.keymap.set({ "n", "i", "v" }, "<M-ScrollWheelUp>", "5zh", { desc = "Scroll left" })
+vim.keymap.set({ "n", "i", "v" }, "<M-ScrollWheelDown>", "5zl", { desc = "Scroll right" })
+-- jump list navigation
+vim.keymap.set("n", "gre", "<C-o>", { desc = "Go back" })
+vim.keymap.set("n", "grf", "<C-i>", { desc = "Go forward" })
+
 -- split window behaviour
 vim.o.splitright = true
 vim.o.splitbelow = true
@@ -61,6 +72,7 @@ vim.o.wrap = false
 --    \|__| \|__|\|__|\|__|\|__|/
 --
 -- Splits navigation
+vim.keymap.set("n", "<C-q>", "<C-w>q", { desc = "Close pane" })
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move left" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move down" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move up" })

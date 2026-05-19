@@ -9,6 +9,8 @@ return {
 				"nvim-telescope/telescope-fzf-native.nvim",
 				build = "make",
 			},
+			-- snippet picker (fuzzy-search + preview LuaSnip snippets)
+			"benfowler/telescope-luasnip.nvim",
 		},
 		config = function()
 			local telescope = require("telescope")
@@ -43,6 +45,8 @@ return {
 
 			-- Load the fzf extension
 			telescope.load_extension("fzf")
+			-- Load the LuaSnip snippet picker extension
+			telescope.load_extension("luasnip")
 			-- telescope.load_extension("notify")
 
 			-- THEN add your keymaps (after telescope is loaded)
@@ -52,6 +56,9 @@ return {
 			vim.keymap.set("n", "<Leader>fg", builtin.live_grep, { desc = "Live grep" })
 			vim.keymap.set("n", "<Leader>fb", builtin.buffers, { desc = "Find buffers" })
 			vim.keymap.set("n", "<Leader>h", builtin.help_tags, { desc = "Help tags" })
+			vim.keymap.set("n", "<Leader>fs", function()
+				telescope.extensions.luasnip.luasnip()
+			end, { desc = "Find snippets" })
 			-- vim.keymap.set(
 			-- 	"n",
 			-- 	"<Leader>nn",

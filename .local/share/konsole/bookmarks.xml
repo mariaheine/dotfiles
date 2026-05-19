@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xbel>
-<xbel xmlns:kdepriv="http://www.kde.org/kdepriv" xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info" dbusName="konsole" folded="no" xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks">
+<xbel xmlns:kdepriv="http://www.kde.org/kdepriv" xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info" folded="no" xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks" dbusName="konsole">
  <bookmark href="http://">
-  <title></title>
+  <title/>
   <info>
    <metadata owner="http://freedesktop.org">
     <bookmark:icon name="www"/>
+   </metadata>
+  </info>
+ </bookmark>
+ <bookmark href="file:///home/merryangel">
+  <title>merryangel</title>
+  <info>
+   <metadata owner="http://freedesktop.org">
+    <bookmark:icon name="kteatime"/>
    </metadata>
   </info>
  </bookmark>

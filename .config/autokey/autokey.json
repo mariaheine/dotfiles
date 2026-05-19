@@ -6,18 +6,18 @@
         "serviceRunning": true,
         "menuTakesFocus": false,
         "showTrayIcon": true,
-        "sortByUsageCount": true,
+        "sortByUsageCount": false,
         "promptToSave": false,
         "enableQT4Workaround": false,
         "interfaceType": "XRecord",
         "undoUsingBackspace": true,
         "windowDefaultSize": [
-            600,
-            400
+            900,
+            525
         ],
-        "hPanePosition": 260,
+        "hPanePosition": 386,
         "columnWidths": [
-            116,
+            136,
             53,
             100
         ],
@@ -30,7 +30,7 @@
     },
     "folders": [],
     "toggleServiceHotkey": {
-        "enabled": true,
+        "enabled": false,
         "modifiers": [
             "<shift>",
             "<super>"
