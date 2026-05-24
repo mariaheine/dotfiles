@@ -31,7 +31,21 @@ return {
 
 			-- Hier kannst du LSP-spezifische Einstellungen für Roslyn vornehmen.
 			-- Diese werden über die standard vim.lsp.config-Schnittstelle konfiguriert.
+			-- Roslyn binary lives in Mason's libexec/ which isn't on $PATH, and roslyn.nvim only
+			-- searches $PATH for "Microsoft.CodeAnalysis.LanguageServer". Point it at the binary directly.
+			-- Roslyn's server also REQUIRES --logLevel and --extensionLogDirectory; missing either makes it exit 1.
+			local roslyn_bin = vim.fn.stdpath("data")
+				.. "/mason/packages/roslyn/libexec/Microsoft.CodeAnalysis.LanguageServer"
+			local roslyn_log_dir = vim.fn.stdpath("log") .. "/roslyn"
+			vim.fn.mkdir(roslyn_log_dir, "p")
+
 			vim.lsp.config("roslyn", {
+				cmd = {
+					roslyn_bin,
+					"--logLevel=Information",
+					"--extensionLogDirectory=" .. roslyn_log_dir,
+					"--stdio",
+				},
 				on_attach = function(client, bufnr)
 					local opts = { buffer = bufnr }
 					vim.keymap.set("n", "grd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition" })

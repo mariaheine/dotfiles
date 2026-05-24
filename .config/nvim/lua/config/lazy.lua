@@ -36,10 +36,12 @@ require("lazy").setup({
     { import = "plugins" },
   },
   -- Configure any other settings here. See the documentation for more details.
-  -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "catppuccin" } },
+  -- Fallback colorschemes shown during lazy's first-install screen. The actual startup theme
+  -- is set at the end of init.lua so it's easy to see and change in one place.
+  install = { colorscheme = { "everforest", "catppuccin" } },
   -- automatically check for plugin updates
   checker = { enabled = true },
 })
 
- vim.cmd.colorscheme "catppuccin"
+-- 🐖 default theme needs to be set here don't ask me
+-- vim.cmd.colorscheme "everforest-soft"

@@ -118,8 +118,8 @@ alias blender='~/Applications/blender-5.1.0-linux-x64/blender'
 alias godot='~/Applications/Godot_v4.6.1-stable_mono_linux_x86_64/Godot_v4.6.1-stable_mono_linux.x86_64'
 
 # Nvim
-# remember to use the archive version not the appimage
-alias nvim='~/Applications/nvim_0.11.6/nvim-linux-x86_64/bin/nvim'
+# 🐖 remember to use the archive tar version not the appimage
+alias nvim='~/Applications/nvim_0.12.2/nvim-linux-x86_64/bin/nvim'
 
 # tmux
 alias tmed='nvim ~/.tmux.conf'

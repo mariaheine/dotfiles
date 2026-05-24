@@ -23,6 +23,7 @@ return {
 			"css",
 			"json",
 			"jsonc",
+			"c_sharp", -- needed for syntax highlighting inside K hover popups for C# code
 		},
 
 		-- Syntax highlighting

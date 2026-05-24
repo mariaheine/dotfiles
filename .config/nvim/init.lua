@@ -42,6 +42,51 @@ vim.keymap.set("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search 
 vim.keymap.set("n", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next match (always down)" })
 vim.keymap.set("n", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev match (always up)" })
 
+-- Pretty diagnostics: rounded float, source name, severity-sorted, neat virtual-text prefix.
+-- Noice doesn't touch diagnostic popups — this is the canonical place to style them.
+vim.diagnostic.config({
+	float = {
+		border = "rounded",
+		source = true,    -- show which LSP produced the diagnostic (e.g. "roslyn")
+		header = "",
+		prefix = "",
+	},
+	virtual_text = {
+		-- Per-severity prefix glyphs.
+		prefix = function(diagnostic)
+			local sev = vim.diagnostic.severity
+			if diagnostic.severity == sev.ERROR then
+				return "👻"
+			elseif diagnostic.severity == sev.WARN then
+				return "🐙"
+			elseif diagnostic.severity == sev.INFO then
+				return "🐇"
+			elseif diagnostic.severity == sev.HINT then
+				return "🐖"
+			else
+				return "●"
+			end
+		end,
+		spacing = 2,
+	},
+	severity_sort = true, -- errors above warnings above info
+	signs = true,
+	underline = true,
+	update_in_insert = false,
+})
+
+-- Auto-clear search highlights once the cursor leaves a match.
+-- While you're sitting on a hit (or stepping through with n/N), highlights stay visible for context.
+-- The moment you move the cursor off all matches (hjkl, w, gg, etc.), :nohlsearch fires.
+-- v:hlsearch == 1 means hlsearch is currently active; searchcount().exact_match == 0 means cursor isn't on a match.
+vim.api.nvim_create_autocmd("CursorMoved", {
+	callback = function()
+		if vim.v.hlsearch == 1 and vim.fn.searchcount({ maxcount = 0 }).exact_match == 0 then
+			vim.cmd.nohlsearch()
+		end
+	end,
+})
+
 -- Horizontal scroll with Alt+ScrollWheel (requires wrap=false)
 vim.keymap.set({ "n", "i", "v" }, "<M-ScrollWheelUp>", "5zh", { desc = "Scroll left" })
 vim.keymap.set({ "n", "i", "v" }, "<M-ScrollWheelDown>", "5zl", { desc = "Scroll right" })
@@ -112,3 +157,28 @@ end
 -- Map Ctrl+` to toggle (works from both normal and terminal mode)
 vim.keymap.set({ "n", "t" }, "<leader>`", toggle_terminal, { desc = "Toggle terminal" })
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- LSP convenience commands. `:LspInfo` / `:LspLog` were removed in Neovim 0.11+; re-add as user commands.
+vim.api.nvim_create_user_command("LspLog", function()
+	vim.cmd.edit(vim.lsp.get_log_path())
+end, { desc = "Open the LSP log" })
+
+vim.api.nvim_create_user_command("LspInfo", function()
+	vim.cmd("checkhealth vim.lsp")
+end, { desc = "Show LSP health/status" })
+
+-- ________  ___  ___  _______   _____ ______   _______
+--|\   __  \|\  \|\  \|\  ___ \ |\   _ \  _   \|\  ___ \
+--\ \  \|\  \ \  \\\  \ \   __/|\ \  \\\__\ \  \ \   __/|
+-- \ \   __  \ \   __  \ \  \_|/_\ \  \\|__| \  \ \  \_|/__
+--  \ \  \ \  \ \  \ \  \ \  \_|\ \ \  \    \ \  \ \  \_|\ \
+--   \ \__\ \__\ \__\ \__\ \_______\ \__\    \ \__\ \_______\
+--    \|__|\|__|\|__|\|__|\|_______|\|__|     \|__|\|_______|
+--
+-- The active startup theme. All plugins have finished loading by now (eager plugins like everforest
+-- and catppuccin both load via `lazy = false, priority = 1000`).
+-- Available choices:
+--   everforest-hard | everforest-medium | everforest-soft  (everforest variants)
+--   catppuccin | catppuccin-mocha | catppuccin-frappe | catppuccin-macchiato | catppuccin-latte
+-- vim.cmd.colorscheme("catppuccin-frappe")
+vim.cmd.colorscheme("everforest-hard")

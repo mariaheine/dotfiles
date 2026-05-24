@@ -53,23 +53,20 @@ return {
 					["<C-Space>"] = cmp.mapping.complete(),
 					-- Close completion window
 					["<C-e>"] = cmp.mapping.abort(),
-					-- confirm selection
-					-- "Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items."
-					["<CR>"] = cmp.mapping.confirm({ select = true }),
-					-- Tab to navigate snippets
+					-- Tab: accept completion when cmp is visible, otherwise jump snippet placeholder or fallback.
+					-- (Arrow keys navigate the cmp menu — handled by cmp.mapping.preset.insert)
 					["<Tab>"] = cmp.mapping(function(fallback)
 						if cmp.visible() then
-							cmp.select_next_item()
+							cmp.confirm({ select = true })
 						elseif luasnip.expand_or_jumpable() then
 							luasnip.expand_or_jump()
 						else
 							fallback()
 						end
 					end, { "i", "s" }),
+					-- Shift+Tab: jump back through snippet placeholders, otherwise fallback.
 					["<S-Tab>"] = cmp.mapping(function(fallback)
-						if cmp.visible() then
-							cmp.select_prev_item()
-						elseif luasnip.jumpable(-1) then
+						if luasnip.jumpable(-1) then
 							luasnip.jump(-1)
 						else
 							fallback()
