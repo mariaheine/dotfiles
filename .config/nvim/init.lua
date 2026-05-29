@@ -156,7 +156,18 @@ end
 
 -- Map Ctrl+` to toggle (works from both normal and terminal mode)
 vim.keymap.set({ "n", "t" }, "<leader>`", toggle_terminal, { desc = "Toggle terminal" })
+
+-- Terminal mode escape. Primary: <Esc>. Backup: <C-x> for cases where the TUI
+-- inside the terminal (e.g. Claude Code) uses <Esc> for its own purposes and intercepts it.
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+vim.keymap.set("t", "<C-x>", "<C-\\><C-n>", { desc = "Exit terminal mode (backup)" })
+
+-- Split navigation from terminal mode — matches the <C-hjkl> bindings you use in normal mode.
+-- Lets you jump to your code split from Claude's terminal without escaping first.
+vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move to left split (from terminal)" })
+vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move to down split (from terminal)" })
+vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move to up split (from terminal)" })
+vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move to right split (from terminal)" })
 
 -- LSP convenience commands. `:LspInfo` / `:LspLog` were removed in Neovim 0.11+; re-add as user commands.
 vim.api.nvim_create_user_command("LspLog", function()
@@ -167,18 +178,15 @@ vim.api.nvim_create_user_command("LspInfo", function()
 	vim.cmd("checkhealth vim.lsp")
 end, { desc = "Show LSP health/status" })
 
--- ________  ___  ___  _______   _____ ______   _______
---|\   __  \|\  \|\  \|\  ___ \ |\   _ \  _   \|\  ___ \
---\ \  \|\  \ \  \\\  \ \   __/|\ \  \\\__\ \  \ \   __/|
--- \ \   __  \ \   __  \ \  \_|/_\ \  \\|__| \  \ \  \_|/__
---  \ \  \ \  \ \  \ \  \ \  \_|\ \ \  \    \ \  \ \  \_|\ \
---   \ \__\ \__\ \__\ \__\ \_______\ \__\    \ \__\ \_______\
---    \|__|\|__|\|__|\|__|\|_______|\|__|     \|__|\|_______|
---
+--  __    __                                   
+-- /\ \__/\ \                                  
+-- \ \ ,_\ \ \___      __    ___ ___      __   
+--  \ \ \/\ \  _ `\  /'__`\/' __` __`\  /'__`\ 
+--   \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \/\  __/ 
+--    \ \__\\ \_\ \_\ \____\ \_\ \_\ \_\ \____\
+--     \/__/ \/_/\/_/\/____/\/_/\/_/\/_/\/____/
 -- The active startup theme. All plugins have finished loading by now (eager plugins like everforest
 -- and catppuccin both load via `lazy = false, priority = 1000`).
--- Available choices:
---   everforest-hard | everforest-medium | everforest-soft  (everforest variants)
---   catppuccin | catppuccin-mocha | catppuccin-frappe | catppuccin-macchiato | catppuccin-latte
+--
 -- vim.cmd.colorscheme("catppuccin-frappe")
-vim.cmd.colorscheme("everforest-hard")
+vim.cmd.colorscheme("everforest")

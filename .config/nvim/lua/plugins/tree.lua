@@ -7,6 +7,16 @@ return {
 	},
 	config = function()
 		require("nvim-tree").setup({
+			-- Don't auto-hijack `nvim .` — opening a directory leaves you on an empty buffer
+			-- (or the snacks dashboard) instead of forcing the file tree open.
+			hijack_directories = {
+				enable = false,
+			},
+			view = {
+				-- Pane width auto-fits the longest visible filename, clamped between min and max.
+				adaptive_size = true,
+				width = { min = 25, max = 60, padding = 1 },
+			},
 			update_focused_file = {
 				enable = true,
 				update_root = false,
