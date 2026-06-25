@@ -36,6 +36,18 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.writebackup = false
 
+-- Auto-reload buffers changed on disk (e.g. by a background Claude session).
+-- `autoread` lets Neovim pull in external changes; `:checktime` is what actually triggers the
+-- check. We fire it on focus/buffer-enter/idle so unmodified buffers refresh on their own, and
+-- bind <leader>R to force a manual sweep. Buffers with unsaved local edits are never clobbered —
+-- :checktime prompts only on a genuine conflict (disk changed AND you have unsaved changes).
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+	group = vim.api.nvim_create_augroup("ReloadChangedFiles", { clear = true }),
+	command = "checktime",
+})
+vim.keymap.set("n", "<leader>R", "<cmd>checktime<cr>", { desc = "Reload changed buffers from disk" })
+
 vim.keymap.set("n", "<Esc><Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
 
 -- Make n/N always go down/up regardless of search direction (/ or ?)
@@ -188,5 +200,23 @@ end, { desc = "Show LSP health/status" })
 -- The active startup theme. All plugins have finished loading by now (eager plugins like everforest
 -- and catppuccin both load via `lazy = false, priority = 1000`).
 --
--- vim.cmd.colorscheme("catppuccin-frappe")
-vim.cmd.colorscheme("everforest")
+-- The persistent default lives in a one-line file written by the "set default theme" keybind
+-- (<leader>cT, see telescope.lua). We read it here and fall back to everforest if it's missing,
+-- empty, or names a colorscheme that failed to apply.
+-- Many themes give the split divider a glaring bright-white WinSeparator. Re-dim it on every
+-- ColorScheme so the fix survives theme switches: borrow the muted Comment foreground (falls back
+-- to a dark grey if the theme doesn't define one) and drop any background fill.
+vim.api.nvim_create_autocmd("ColorScheme", {
+	group = vim.api.nvim_create_augroup("DimWinSeparator", { clear = true }),
+	callback = function()
+		local comment = vim.api.nvim_get_hl(0, { name = "Comment", link = false })
+		vim.api.nvim_set_hl(0, "WinSeparator", { fg = comment.fg or "#45475a", bg = "NONE" })
+	end,
+})
+
+local theme_file = vim.fn.stdpath("data") .. "/theme.txt"
+local default_theme = "everforest"
+local saved = vim.fn.filereadable(theme_file) == 1 and vim.fn.readfile(theme_file)[1] or nil
+if not (saved and pcall(vim.cmd.colorscheme, vim.trim(saved))) then
+	vim.cmd.colorscheme(default_theme)
+end

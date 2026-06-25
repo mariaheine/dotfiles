@@ -27,7 +27,7 @@ return {
 						separator = true,
 					},
 				},
-				separator_style = "slant", -- "slant" | "thick" | "thin" | "padded_slant"
+				separator_style = "thin", -- "slant" | "thick" | "thin" | "padded_slant"
 				show_buffer_close_icons = true,
 				show_close_icon = false,
 				color_icons = true,

@@ -94,6 +94,28 @@ return {
 			})
 
 			vim.lsp.enable("roslyn")
+
+			-- Fix partial C# colouring in splits/tabs opened before the solution finishes loading.
+			-- Roslyn returns EMPTY semantic tokens (method/field/property colours) for a document
+			-- until its project is loaded, and a buffer opened during that window never retries — so
+			-- only the first file you sit on long enough gets full colouring. roslyn.nvim fires this
+			-- User event (with the client id) the moment the server reports the solution is fully
+			-- initialised, so we re-request tokens for every buffer on that client. Late-opened splits
+			-- then light up automatically instead of staying stuck on Treesitter-only.
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "RoslynInitialized",
+				callback = function(args)
+					local client = vim.lsp.get_client_by_id(args.data and args.data.client_id)
+					if not client then
+						return
+					end
+					for buf in pairs(client.attached_buffers or {}) do
+						if vim.api.nvim_buf_is_valid(buf) then
+							vim.lsp.semantic_tokens.force_refresh(buf)
+						end
+					end
+				end,
+			})
 		end,
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",

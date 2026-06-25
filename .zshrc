@@ -102,20 +102,21 @@ eval "$(starship init zsh)"
 #
 alias zshs='source ~/.zshrc'
 alias zshed='nvim ~/.zshrc'
-
+ 
 # daily things
 alias la='lsd -la'
 alias fd='fdfind'
 
 # Unity
 alias killunity='pkill -9 -f "/Editor/Unity"; rm -f ~/Projects/sanctuary/sanctuary/sanctuary/Temp/UnityLockfile'
-alias sanctuary='/home/merryangel/Projects/sanctuary/builds/Development/1.6.0.sanctuary.coreprincess/Linux/sanctuary.x86_64'
+alias sanctuary='/home/merryangel/Projects/sanctuary/builds/Development/1.7.0.sanctuary.coreprincess/Linux-Production/sanctuary_1.7.0_coreprincess.x86_64'
 alias unity='flatpak run com.unity.UnityHub'
 
 # Apps
 alias shotcut='~/Applications/Shotcut-25.11.AppImage'
 alias blender='~/Applications/blender-5.1.0-linux-x64/blender'
 alias godot='~/Applications/Godot_v4.6.1-stable_mono_linux_x86_64/Godot_v4.6.1-stable_mono_linux.x86_64'
+alias obsidian='~/Applications/Obsidian-1.9.14.AppImage'
 
 # Nvim
 # 🐖 remember to use the archive tar version not the appimage

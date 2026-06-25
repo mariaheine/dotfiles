@@ -8,9 +8,20 @@ local function filename_no_ext()
 	return vim.fn.expand("%:t:r")
 end
 
+local function timestamp()
+	return os.date("%Y-%m-%d, %a, %H:%M")
+end
+
 ls.add_snippets("cs", {
 	s("grzeka", {
 		t({
+			"/*",
+			"      |\\      _,,,---,,_",
+			"ZZZzz /,`.-'`'    -.  ;-;;,_",
+			"     |,4-  ) )-,_. ,\\ (  `'-'",
+			"    '---''(_/--'  `-'\\_)",
+			"*/",
+			"",
 			"using Godot;",
 			"using System;",
 			"using System.Reactive.Linq;",
@@ -52,6 +63,65 @@ ls.add_snippets("cs", {
 			"\t\tQ.Dispose();",
 			"\t}",
 			"}",
+			"",
+			"/* created at ",
+		}),
+		f(timestamp, {}),
+		t({
+			" 🌊 */",
+			"/* dreamy guardian ASCII kitty by Felix Lee, found at asciiart.eu 🐱‍👤 */",
+		}),
+	}),
+	s("gnode", {
+		t({
+			"/*",
+			"      |\\      _,,,---,,_",
+			"ZZZzz /,`.-'`'    -.  ;-;;,_",
+			"     |,4-  ) )-,_. ,\\ (  `'-'",
+			"    '---''(_/--'  `-'\\_)",
+			"*/",
+			"",
+			"using Godot;",
+			"using System;",
+			"",
+			"namespace ",
+		}),
+		i(1, "SnippetNamespace"),
+		t({ ";", "public partial class " }),
+		f(filename_no_ext, {}),
+		t({ " : " }),
+		i(2, "Node"),
+		t({
+			"",
+			"{",
+			"\tpublic override void _EnterTree()",
+			"\t{",
+			"\t}",
+			"",
+			"\tpublic override void _Ready()",
+			"\t{",
+			"\t\t",
+		}),
+		i(0),
+		t({
+			"",
+			"\t}",
+			"",
+			"\tpublic override void _Process(double delta)",
+			"\t{",
+			"\t}",
+			"",
+			"\tpublic override void _ExitTree()",
+			"\t{",
+			"\t}",
+			"}",
+			"",
+			"/* created at ",
+		}),
+		f(timestamp, {}),
+		t({
+			" 🌊 */",
+			"/* dreamy guardian ASCII kitty by Felix Lee, found at asciiart.eu 🐱‍👤 */",
 		}),
 	}),
 })

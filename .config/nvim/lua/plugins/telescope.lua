@@ -59,6 +59,23 @@ return {
 			vim.keymap.set("n", "<Leader>fs", function()
 				telescope.extensions.luasnip.luasnip()
 			end, { desc = "Find snippets" })
+			-- Theme picker — live-previews each colorscheme as you scroll, commits on <CR>.
+			-- Session-only: doesn't rewrite the saved default, so a restart returns to whatever
+			-- was last persisted with <leader>cT below.
+			vim.keymap.set("n", "<Leader>ct", function()
+				builtin.colorscheme({ enable_preview = true })
+			end, { desc = "Pick colorscheme/theme" })
+			-- Persist the CURRENT colorscheme as the startup default. init.lua reads this file on
+			-- launch, so the next time nvim opens it'll start in the theme that's active right now.
+			vim.keymap.set("n", "<Leader>cT", function()
+				local theme = vim.g.colors_name
+				if not theme or theme == "" then
+					vim.notify("No active colorscheme to save", vim.log.levels.WARN)
+					return
+				end
+				vim.fn.writefile({ theme }, vim.fn.stdpath("data") .. "/theme.txt")
+				vim.notify("Default theme set to '" .. theme .. "'", vim.log.levels.INFO)
+			end, { desc = "Set current theme as default" })
 			-- vim.keymap.set(
 			-- 	"n",
 			-- 	"<Leader>nn",
